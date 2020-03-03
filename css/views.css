@@ -1,0 +1,73 @@
+body, h1, h2, h3, h4, h5, h6 {
+    font-family: 'Source Sans Pro', sans-serif;
+}
+
+h2{
+    font-size: 20px;
+    font-weight: 700;
+}
+
+h3 {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.4;
+    margin: 0;
+}
+
+h4{
+    font-size: 15px;
+    line-height: 1.4;
+    color: #333;
+    margin: 0;
+    text-decoration: underline;
+}
+
+#description {
+    font-size: 13px;
+    font-style: italic;
+    color: #333;
+    margin: 0;
+}
+
+#map {
+    width: 300;
+    height: 700px;
+}
+
+.yearSelections {
+    float: right;
+}
+.dropdown {
+    margin-left: 10px;
+}
+
+hr {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+div.circle {
+    /*background-color: #A4D65E #ff7800;*/
+    background-color: #A4D65E;
+    border-color: red;
+    border-radius: 10px;
+    border-style: solid;
+    border-width: 2px;
+    width:18px;
+    height:18px;
+}
+
+.leaflet-popup-content-wrapper, .leaflet-popup-tip{
+     background: rgb(243, 243, 243);;
+}
+.info {
+    padding: 6px 8px;
+    font: 14px/17px Arial, Helvetica, sans-serif;
+    background: white;
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    /*border-radius: 5px;*/
+}
+
+
+
