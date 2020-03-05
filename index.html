@@ -6,18 +6,20 @@
 	<link rel='icon' type='image/png' href='https://data.humdata.org/images/icons/hdx.ico' />
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="css/leaflet.css" />
+     <link rel="stylesheet" type="text/css" href="css/c3.css" />
     <link rel="stylesheet" type="text/css" href="css/views.css" />
     <script src="js/jquery.js"></script>
     <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
     <script src="https://d3js.org/d3.v5.js"></script>
     <script src="//d3js.org/topojson.v1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.7.15/c3.min.js"></script>
 </head>
 <body>
 	<div class="container">
 		<div class="row">
 			<h2>Humanitarian Needs Overview and People in Need trends (2014 - 2019) </h2>
 			<p>
-				Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam enim inventore iusto vel odit repellat, dolorum dolorem excepturi, eos, cum aut? Quos, perspiciatis, doloremque nisi voluptatem alias rerum possimus quaerat. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia animi dicta possimus dolorem obcaecati ut quod officia facere nemo, iste architecto praesentium quae quibusdam magni nihil asperiores, impedit reprehenderit non.
+				Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam enim inventore iusto vel odit repellat, dolorum dolorem excepturi, eos, cum aut? Quos, perspiciatis, doloremque nisi voluptatem alias rerum possimus quaerat. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia animi dicta possimus dolorem obcaecati ut quod officia facere nemo.
 			</p>
 		</div>
 		<div class="row">
@@ -26,8 +28,13 @@
 				<div id="requirement"></div>
 			</div>
 			<div class="col-md-6">
-				<h4>People in Need chart</h4>
-				<div id="pin"></div>
+				<div class="row">
+					<h4>Trend People in Need</h4>
+					<div id="pin"></div>
+				</div>
+				<div class="row">
+					<div id="funding"></div>
+				</div>
 			</div>
 		</div>
 		<div class="row">

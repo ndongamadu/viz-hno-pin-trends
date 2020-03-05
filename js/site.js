@@ -1,7 +1,9 @@
 $(document).ready(function(){
     let hnosLink = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSMmlKxX6PV391tanxo6aKltrtYcF4VTbXtsRtn66Fr4CY_VEjbEpJ9AlZzyIVapdKaOKZwTjyUL8IZ/pub?gid=0&single=true&output=csv';
     let world = 'data/coordinates.csv';
-    let hnoData, hnoCountries, yearArr = '';
+    let pinLink = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS5Bnwu1obzVdL9CuwpZ5CjuirjbNuXHPCwhkdF1xDvg26U9bT7yDPNmCHqdiGbRA/pub?gid=631670798&single=true&output=csv';
+    let hnoData, pinData, yearArr = '';
+    let fundingReqChart, pinChart, fundingChart;
 
     function getLatLon(d){
         return [d.latitude, d.longitude]
@@ -19,17 +21,6 @@ $(document).ready(function(){
         popup += '<h4><a href="'+d.dataset+'" target="blank">'+d.name+" "+d.year+' HNO dataset</a></h4>';
 
         return popup;
-    }
-
-    function createDropdown (arr) {
-        //sort arr
-        var drpdwn = '<label>Year </label><select class="dropdown" id="year">';
-        for (var i = 0; i < arr.length; i++) {
-             i==0 ? drpdwn += '<option value="'+i+'" selected >'+arr[i]+'</option>':
-             drpdwn += '<option value="'+i+'">'+arr[i]+'</option>';
-         } 
-        drpdwn += '</select>';
-        $('.yearSelections').append(drpdwn);
     }
 
     function createMarker (d) {
@@ -59,14 +50,138 @@ $(document).ready(function(){
             createMarker(hno[i]).addTo(map).bindPopup(popUp(hno[i]));
         }
 
-
-
     } // createMap()
+
+    function drawC3Chart (arg) {
+        data =  getPinAndFunding(arg);
+        console.log(data.funding[0])
+        fundingReqChart = c3.generate({
+            bindto: '#requirement',
+            size: {height : 300},
+            data: {
+                x: 'x',
+                columns: [data.funding[0],data.funding[1],data.req[1]],
+                type: 'bar'
+            },
+            axis: {
+                x: {
+                    type: 'category',
+                    tick:{
+                        centered: true,
+                        outer: false,
+                    }
+                },
+                y: {
+                    tick: {
+                        count: 6,
+                        format: d3.format('.2s')
+                    }
+                }
+            }
+        });
+
+        fundingChart = c3.generate({
+            bindto: '#funding',
+            size: {height: 150},
+            data: {
+                x: 'x',
+                columns: [data.funding[0], data.funding[1]],
+                type: 'bar'
+            },
+            axis: {
+                x: {
+                    type: 'category',
+                    tick:{
+                        centered: true,
+                        outer: false,
+                    }
+                },
+                y: {
+                    tick: {
+                        count: 6,
+                        format: d3.format('.2s')
+                    }
+                }
+            }
+        });
+
+        pinChart = c3.generate({
+            bindto: '#pin',
+            size: {height: 150},
+            data: {
+                x: 'x',
+                columns: [data.pin[0], data.pin[1]],
+                type: 'bar'
+            },
+            axis: {
+                x: {
+                    type: 'category',
+                    tick:{
+                        centered: true,
+                        outer: false,
+                    }
+                },
+                y: {
+                    tick: {
+                        count: 6,
+                        format: d3.format('.2s')
+                    }
+                }
+            }
+        });
+    }
+
+    function getPinAndFunding (data, country) {
+        if (country !=undefined) {
+            data = data.filter(function(d){
+                return d['Crisis Country']==country;
+            });
+        }
+
+        var dataByMetric = d3.nest()
+        .key(function(d){ return d['Metric']; })
+        .key(function(d){ return d['Year']; })
+        .rollup(function(v){ return d3.sum(v, function(d){ return d['Value']; }); })
+        .entries(data) ;
+
+        var xFunding = ['x'],
+            xPin     = ['x'],
+            xReq     = ['x'],
+            funding  = ['Funding recieved'],
+            pin      = ['People in need'],
+            req      = ['Funding requirements'];
+        for (k in dataByMetric){
+            if(dataByMetric[k].key=='Funding recieved'){
+                dataByMetric[k].values.forEach( function(element, index) {
+                    xFunding.push(element.key)
+                    funding.push(element.value)
+                });
+            } else if (dataByMetric[k].key=='Funding requirements') {
+                dataByMetric[k].values.forEach( function(element, index) {
+                    xReq.push(element.key)
+                    req.push(element.value)
+                });
+            } else if (dataByMetric[k].key=='People in need') {
+                dataByMetric[k].values.forEach( function(element, index) {
+                    xPin.push(element.key)
+                    pin.push(element.value)
+                });                
+            }
+        }
+        return {
+            pin: [xPin, pin],
+            req: [xReq, req],
+            funding: [xFunding, funding]
+        }
+
+
+    } //generatePinAndFunding
 
     function getData () {
         Promise.all([
             d3.csv(hnosLink),
-            d3.csv(world)
+            d3.csv(world),
+            d3.csv(pinLink)
         ]).then(function(data){
             hnoData = [];
             yearArr = [];
@@ -91,7 +206,9 @@ $(document).ready(function(){
                 hnoData.push(obj);
                 yearArr.includes(obj.year) ? '': yearArr.push(obj.year);
             });
-            createDropdown(yearArr);
+
+            pinData = data[2]
+            drawC3Chart(pinData)
             createMap(hnoData);
             
 
