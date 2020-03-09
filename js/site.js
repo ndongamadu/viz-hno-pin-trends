@@ -32,6 +32,20 @@ $(document).ready(function(){
         }) 
     }
 
+
+    function updateHNOAndPinCharts (event){
+        var newData = getPinAndFunding(event.layer.pays) ;
+        fundingReqChart.load({
+            columns:[newData.funding[0], newData.funding[1], newData.req[1]]
+        });
+        pinChart.load({
+            columns:[newData.pin[0], newData.pin[1]]
+        });
+        fundingChart.load({
+            columns:[newData.funding[0], newData.funding[1]]
+        });
+    }
+
     function createMap (hno) {
 
         var map = L.map('map',
@@ -46,15 +60,19 @@ $(document).ready(function(){
             attribution: '<a href="http://mapbox.com">Mapbox</a>'
         }).addTo(map); 
 
+        var myFeatureGroup = L.featureGroup().addTo(map).on("click", updateHNOAndPinCharts);
+        var marker, pays;
         for (var i = 0; i < hno.length; i++) {
-            createMarker(hno[i]).addTo(map).bindPopup(popUp(hno[i]));
+            marker = createMarker(hno[i]).addTo(myFeatureGroup).bindPopup(popUp(hno[i]));
+            pays = hno[i].name ;
+            marker.pays = pays;
         }
 
     } // createMap()
 
     function drawC3Chart (arg) {
-        data =  getPinAndFunding(arg);
-        console.log(data.funding[0])
+        data =  getPinAndFunding(
+            );
         fundingReqChart = c3.generate({
             bindto: '#requirement',
             size: {height : 300},
@@ -111,7 +129,7 @@ $(document).ready(function(){
             data: {
                 x: 'x',
                 columns: [data.pin[0], data.pin[1]],
-                type: 'bar'
+                type: 'line'
             },
             axis: {
                 x: {
@@ -131,7 +149,8 @@ $(document).ready(function(){
         });
     }
 
-    function getPinAndFunding (data, country) {
+    function getPinAndFunding (country) {
+        var data = pinData;
         if (country !=undefined) {
             data = data.filter(function(d){
                 return d['Crisis Country']==country;
